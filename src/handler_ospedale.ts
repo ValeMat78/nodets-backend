@@ -188,10 +188,13 @@ export const deletePaziete = async (
         if(!event.pathParameters?.id){
             throw new Error ("Missing id parameter in the URL. ")
         }
-        
+
         const dbConnection = await getDbConnection();
 
-        const [rows] = await dbConnection.query("delete FROM patienti where id = ?",
+        // const [rows] = await dbConnection.query("delete FROM patienti where id = ?",
+        //                                         [event.pathParameters?.id]);
+
+        const [rows] = await dbConnection.query("update patienti set stato = 'DIMISSIONE'  where id = ?",
                                                 [event.pathParameters?.id]);
         await dbConnection.end();
 
@@ -212,7 +215,7 @@ export const deletePaziete = async (
             }),
         }
 
-    return response
+        return response
 
     }
 
