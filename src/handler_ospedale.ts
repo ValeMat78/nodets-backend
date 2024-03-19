@@ -141,11 +141,23 @@ export const updatePaziente = async (
     event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> =>{
     try {
+        
+        if(!event.body){
+            throw new Error("Missing request body");
+        }
+        if(!event.pathParameters?.id){
+            throw new Error ("Missing id parameter in the URL. ")
+        }
+
+        // Omit permette di omettere alcuni dati dal input
+        const paziente: Partial<IPaziente> = JSON.parse(event.body);
+        const id = event.pathParameters?.id
+
         const dbConnection = await getDbConnection();
 
-        const [rows] = await dbConnection.query("SELECT * FROM patients");
+        const [rows] = await dbConnection.query("update pazienti set ? where id = ?",
+                                                [paziente, id]);
         await dbConnection.end();
-
 
         console.table(rows);
 
@@ -173,9 +185,14 @@ export const deletePaziete = async (
     event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> =>{
     try {
+        if(!event.pathParameters?.id){
+            throw new Error ("Missing id parameter in the URL. ")
+        }
+        
         const dbConnection = await getDbConnection();
 
-        const [rows] = await dbConnection.query("SELECT * FROM patients");
+        const [rows] = await dbConnection.query("delete FROM patienti where id = ?",
+                                                [event.pathParameters?.id]);
         await dbConnection.end();
 
 
