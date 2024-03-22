@@ -7,7 +7,7 @@ provider:
   runtime: nodejs20.x
   region: us-east-1
   iam:
-    role: arn:aws:iam::730335289907:role/LabRole
+    role: arn:aws:iam::637423409147:role/LabRole
   
   environment:
     DB_HOST: db-afp-2024.c7ky6o82a8hh.us-east-1.rds.amazonaws.com
@@ -17,25 +17,54 @@ provider:
     DB_NAME: afp_ps
 
 functions:
-  hello:
-    handler: src/handler.hello
-    events:
-      - httpApi:
-          path: /hello
-          method: get
-  goodbye:
-    handler: src/handler.goodbye
-    events:
-      - httpApi:
-          path: /goodbye
-          method: get
-    
+
   getAllPatients:
-    handler: src/handler.getAllPatients
+    handler: src/handler_ospedale.getAllPatients
     events:
       - httpApi:
           path: /getAllPatients
           method: get
+          cors: true
+    
+  getPatient:
+    handler: src/handler_ospedale.getPatient
+    events:
+      - httpApi:
+          path: /getPatient
+          method: get
+          cors: true
+
+  createPatient:
+    handler: src/handler_ospedale.createPatient
+    events:
+      - httpApi:
+          path: /createPatient
+          method: post
+          cors: true
+
+  updatePatient:
+    handler: src/handler_ospedale.updatePatient
+    events:
+      - httpApi:
+          path: /updatePatient/{id}
+          method: put
+          cors: true
+
+  deletePatient:
+    handler: src/handler_ospedale.deletePatient
+    events:
+      - httpApi:
+          path: /deletePatient/{id}
+          method: delete
+          cors: true
+
+  debugEvent:
+    handler: src/handler_ospedale.debugEvent
+    events:
+      - httpApi:
+          path: /debugEvent/{id}
+          method: get
+          cors: true
 
 plugins:
   - serverless-offline
